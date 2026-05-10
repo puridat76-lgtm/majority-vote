@@ -906,6 +906,19 @@ video,
   background: rgba(130, 102, 90, 0.08);
 }
 
+video.mirror {
+  transform: scaleX(-1);
+}
+
+.camera-card {
+  display: grid;
+  gap: 12px;
+}
+
+.camera-card video {
+  min-height: 220px;
+}
+
 .preview-box {
   display: grid;
   gap: 10px;

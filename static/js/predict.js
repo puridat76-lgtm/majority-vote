@@ -51,9 +51,10 @@ const retryPredictBtn = document.getElementById('retryPredictBtn');
 const video = document.getElementById('video');
 const cameraCanvas = document.getElementById('cameraCanvas');
 const startCameraBtn = document.getElementById('startCameraBtn');
+const switchCameraBtn = document.getElementById('switchCameraBtn');
 const captureBtn = document.getElementById('captureBtn');
 
-const state = { currentFile: null, capturedDataUrl: null, stream: null, analysisTimers: [] };
+const state = { currentFile: null, capturedDataUrl: null, stream: null, cameraFacingMode: 'environment', analysisTimers: [] };
 const labelMap = { unknown_cat: 'แมวที่ไม่อยู่ในระบบ', not_cat: 'ไม่ใช่แมว', low_quality: 'คุณภาพภาพไม่ผ่าน' };
 const qualityReasonMap = { image_too_small: 'รูปมีขนาดเล็กเกินไป', image_too_blurry: 'รูปเบลอเกินไป', image_too_dark: 'รูปมืดเกินไป', image_too_bright: 'รูปสว่างเกินไป' };
 const cropStrategyMap = { cat_face: 'ครอปตามหน้าแมว', center_square: 'ครอปกลางภาพ' };
@@ -288,7 +289,32 @@ async function predict() {
   renderResult(data);
 }
 
-async function startCamera() { if (!state.stream) { state.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false }); video.srcObject = state.stream; } }
+function stopCamera() {
+  if (!state.stream) return;
+  state.stream.getTracks().forEach((track) => track.stop());
+  state.stream = null;
+  video.srcObject = null;
+}
+
+async function startCamera() {
+  stopCamera();
+  try {
+    state.stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: state.cameraFacingMode } },
+      audio: false,
+    });
+  } catch (_error) {
+    state.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+  }
+  video.srcObject = state.stream;
+  video.classList.toggle('mirror', state.cameraFacingMode === 'user');
+}
+
+async function switchCamera() {
+  state.cameraFacingMode = state.cameraFacingMode === 'environment' ? 'user' : 'environment';
+  await startCamera();
+}
+
 function captureFrame() {
   if (!state.stream) return;
   const width = video.videoWidth || 640, height = video.videoHeight || 480;
@@ -298,7 +324,7 @@ function captureFrame() {
 }
 
 fileInput.addEventListener('change', (event) => { const [file] = event.target.files; if (!file) return; state.currentFile = file; state.capturedDataUrl = null; const reader = new FileReader(); reader.onload = () => setPreview(reader.result, file.name); reader.readAsDataURL(file); });
-predictBtn.addEventListener('click', predict); retryPredictBtn.addEventListener('click', resetPredictionFlow); startCameraBtn.addEventListener('click', startCamera); captureBtn.addEventListener('click', captureFrame);
+predictBtn.addEventListener('click', predict); retryPredictBtn.addEventListener('click', resetPredictionFlow); startCameraBtn.addEventListener('click', startCamera); switchCameraBtn.addEventListener('click', switchCamera); captureBtn.addEventListener('click', captureFrame);
 document.querySelectorAll('.tab-pill').forEach((button) => { button.addEventListener('click', () => { document.querySelectorAll('.tab-pill').forEach((tab) => tab.classList.remove('active')); document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.remove('active')); button.classList.add('active'); document.getElementById(`tab-${button.dataset.tab}`).classList.add('active'); }); });
-window.addEventListener('beforeunload', () => { if (state.stream) state.stream.getTracks().forEach((track) => track.stop()); });
+window.addEventListener('beforeunload', stopCamera);
 resetRenderedResult(); refreshSummary();

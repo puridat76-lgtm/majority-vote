@@ -28,6 +28,11 @@ const imageGrid = document.getElementById('imageGrid');
 const formMessage = document.getElementById('formMessage');
 const deleteCatBtn = document.getElementById('deleteCatBtn');
 const resetFormBtn = document.getElementById('resetFormBtn');
+const catCameraVideo = document.getElementById('catCameraVideo');
+const catCameraCanvas = document.getElementById('catCameraCanvas');
+const catStartCameraBtn = document.getElementById('catStartCameraBtn');
+const catSwitchCameraBtn = document.getElementById('catSwitchCameraBtn');
+const catCaptureBtn = document.getElementById('catCaptureBtn');
 
 const state = {
   cats: [],
@@ -36,6 +41,8 @@ const state = {
   pendingImagePreviews: [],
   uploadWarnings: [],
   uploadSizeError: '',
+  cameraStream: null,
+  cameraFacingMode: 'environment',
 };
 
 let preferredCatId = Number(new URLSearchParams(window.location.search).get('cat_id')) || null;
@@ -104,6 +111,69 @@ function syncPendingFilesToInput() {
   });
   imagesInput.files = transfer.files;
   imagesHint.textContent = `${state.pendingImagePreviews.length} ไฟล์`;
+}
+
+function appendPendingFiles(files) {
+  files.forEach((file) => {
+    state.pendingImagePreviews.push({
+      name: file.name,
+      file,
+      status: 'checking',
+      duplicateDetail: '',
+      url: URL.createObjectURL(file),
+    });
+  });
+  syncPendingFilesToInput();
+  renderUploadPreviewGrid();
+  renderImageGrid(selectedCat()?.images || []);
+}
+
+function stopCatCamera() {
+  if (!state.cameraStream) return;
+  state.cameraStream.getTracks().forEach((track) => track.stop());
+  state.cameraStream = null;
+  catCameraVideo.srcObject = null;
+}
+
+async function startCatCamera() {
+  stopCatCamera();
+  try {
+    state.cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: state.cameraFacingMode } },
+      audio: false,
+    });
+  } catch (_error) {
+    state.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+  }
+  catCameraVideo.srcObject = state.cameraStream;
+  catCameraVideo.classList.toggle('mirror', state.cameraFacingMode === 'user');
+}
+
+async function switchCatCamera() {
+  state.cameraFacingMode = state.cameraFacingMode === 'environment' ? 'user' : 'environment';
+  await startCatCamera();
+}
+
+function canvasToFile(canvas, filename) {
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      resolve(blob ? new File([blob], filename, { type: 'image/jpeg' }) : null);
+    }, 'image/jpeg', 0.95);
+  });
+}
+
+async function captureCatCameraImage() {
+  if (!state.cameraStream) return;
+  const width = catCameraVideo.videoWidth || 640;
+  const height = catCameraVideo.videoHeight || 480;
+  catCameraCanvas.width = width;
+  catCameraCanvas.height = height;
+  catCameraCanvas.getContext('2d').drawImage(catCameraVideo, 0, 0, width, height);
+  const file = await canvasToFile(catCameraCanvas, `cat_camera_${Date.now()}.jpg`);
+  if (!file) return;
+  appendPendingFiles([file]);
+  setMessage(formMessage, 'กำลังตรวจรูปซ้ำ...', 'neutral');
+  await validateSelectedImages();
 }
 
 async function removePendingImage(index) {
@@ -469,16 +539,7 @@ async function deleteImage(imageName) {
 
 imagesInput.addEventListener('change', async () => {
   clearPendingImagePreviews();
-  state.pendingImagePreviews = [...imagesInput.files].map((file) => ({
-    name: file.name,
-    file,
-    status: 'checking',
-    duplicateDetail: '',
-    url: URL.createObjectURL(file),
-  }));
-  imagesHint.textContent = `${state.pendingImagePreviews.length} ไฟล์`;
-  renderUploadPreviewGrid();
-  renderImageGrid(selectedCat()?.images || []);
+  appendPendingFiles([...imagesInput.files]);
   if (state.pendingImagePreviews.length) {
     setMessage(formMessage, 'กำลังตรวจรูปซ้ำ...', 'neutral');
   }
@@ -493,6 +554,9 @@ searchInput.addEventListener('input', (event) => {
 newCatBtn.addEventListener('click', resetForm);
 resetFormBtn.addEventListener('click', resetForm);
 catForm.addEventListener('submit', saveCat);
+catStartCameraBtn.addEventListener('click', startCatCamera);
+catSwitchCameraBtn.addEventListener('click', switchCatCamera);
+catCaptureBtn.addEventListener('click', captureCatCameraImage);
 
 catList.addEventListener('click', (event) => {
   const selectButton = event.target.closest('[data-select-cat]');
@@ -537,7 +601,10 @@ deleteCatBtn.addEventListener('click', () => {
   }
 });
 
-window.addEventListener('beforeunload', clearPendingImagePreviews);
+window.addEventListener('beforeunload', () => {
+  clearPendingImagePreviews();
+  stopCatCamera();
+});
 
 resetForm();
 loadCats({ selectFirst: true });

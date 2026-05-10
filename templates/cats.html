@@ -68,6 +68,16 @@
           <div id="uploadPreviewGrid" class="upload-preview-grid" aria-live="polite"></div>
         </label>
 
+        <section class="camera-card">
+          <video id="catCameraVideo" autoplay playsinline muted></video>
+          <div class="toolbar">
+            <button id="catStartCameraBtn" class="btn soft" type="button">เปิดกล้อง</button>
+            <button id="catSwitchCameraBtn" class="btn soft" type="button">สลับกล้อง</button>
+            <button id="catCaptureBtn" class="btn ghost" type="button">ถ่ายรูป</button>
+          </div>
+          <canvas id="catCameraCanvas" class="hidden"></canvas>
+        </section>
+
         <section class="sub-panel">
           <div class="sub-head">
             <span>รูปในชุดข้อมูล</span>

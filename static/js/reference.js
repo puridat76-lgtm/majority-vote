@@ -22,6 +22,11 @@ const referenceLoadMoreBtn = document.getElementById('referenceLoadMoreBtn');
 const referenceGrid = document.getElementById('referenceGrid');
 const referenceEmpty = document.getElementById('referenceEmpty');
 const referenceMessage = document.getElementById('referenceMessage');
+const referenceCameraVideo = document.getElementById('referenceCameraVideo');
+const referenceCameraCanvas = document.getElementById('referenceCameraCanvas');
+const referenceStartCameraBtn = document.getElementById('referenceStartCameraBtn');
+const referenceSwitchCameraBtn = document.getElementById('referenceSwitchCameraBtn');
+const referenceCaptureBtn = document.getElementById('referenceCaptureBtn');
 
 const state = {
   limit: 24,
@@ -30,6 +35,8 @@ const state = {
   uploadWarnings: [],
   uploadSizeError: '',
   duplicateHashIndex: {},
+  cameraStream: null,
+  cameraFacingMode: 'environment',
 };
 
 function formatBytes(bytes) {
@@ -143,6 +150,58 @@ function appendPendingFiles(files) {
       url: URL.createObjectURL(file),
     });
   });
+}
+
+function stopReferenceCamera() {
+  if (!state.cameraStream) return;
+  state.cameraStream.getTracks().forEach((track) => track.stop());
+  state.cameraStream = null;
+  referenceCameraVideo.srcObject = null;
+}
+
+async function startReferenceCamera() {
+  stopReferenceCamera();
+  try {
+    state.cameraStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: state.cameraFacingMode } },
+      audio: false,
+    });
+  } catch (_error) {
+    state.cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+  }
+  referenceCameraVideo.srcObject = state.cameraStream;
+  referenceCameraVideo.classList.toggle('mirror', state.cameraFacingMode === 'user');
+}
+
+async function switchReferenceCamera() {
+  state.cameraFacingMode = state.cameraFacingMode === 'environment' ? 'user' : 'environment';
+  await startReferenceCamera();
+}
+
+function canvasToFile(canvas, filename) {
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      resolve(blob ? new File([blob], filename, { type: 'image/jpeg' }) : null);
+    }, 'image/jpeg', 0.95);
+  });
+}
+
+async function captureReferenceCameraImage() {
+  if (!state.cameraStream) return;
+  const width = referenceCameraVideo.videoWidth || 640;
+  const height = referenceCameraVideo.videoHeight || 480;
+  referenceCameraCanvas.width = width;
+  referenceCameraCanvas.height = height;
+  referenceCameraCanvas.getContext('2d').drawImage(referenceCameraVideo, 0, 0, width, height);
+  const file = await canvasToFile(referenceCameraCanvas, `${referenceKey}_camera_${Date.now()}.jpg`);
+  if (!file) return;
+  appendPendingFiles([file]);
+  state.uploadWarnings = [];
+  state.uploadSizeError = '';
+  syncPendingFilesToInput();
+  renderUploadPreviewGrid();
+  setMessage(referenceMessage, 'กำลังตรวจรูปซ้ำ...', 'neutral');
+  await validateSelectedImages();
 }
 
 function renderReferenceGrid(referenceSet) {
@@ -386,6 +445,9 @@ referenceInput.addEventListener('change', async () => {
 });
 
 referenceSaveBtn.addEventListener('click', uploadImages);
+referenceStartCameraBtn.addEventListener('click', startReferenceCamera);
+referenceSwitchCameraBtn.addEventListener('click', switchReferenceCamera);
+referenceCaptureBtn.addEventListener('click', captureReferenceCameraImage);
 referenceResetBtn.addEventListener('click', () => {
   clearPendingImagePreviews();
   setMessage(referenceMessage, '');
@@ -407,7 +469,10 @@ referenceUploadPreviewGrid.addEventListener('click', (event) => {
   }
 });
 
-window.addEventListener('beforeunload', releasePendingImagePreviews);
+window.addEventListener('beforeunload', () => {
+  releasePendingImagePreviews();
+  stopReferenceCamera();
+});
 
 clearPendingImagePreviews();
 Promise.all([loadReference(), refreshSummary()]);

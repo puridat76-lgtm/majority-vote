@@ -28,6 +28,15 @@
         <span id="referenceInputHint">0 ไฟล์</span>
         <div id="referenceUploadPreviewGrid" class="upload-preview-grid" aria-live="polite"></div>
       </label>
+      <section class="camera-card">
+        <video id="referenceCameraVideo" autoplay playsinline muted></video>
+        <div class="toolbar">
+          <button id="referenceStartCameraBtn" class="btn soft" type="button">เปิดกล้อง</button>
+          <button id="referenceSwitchCameraBtn" class="btn soft" type="button">สลับกล้อง</button>
+          <button id="referenceCaptureBtn" class="btn ghost" type="button">ถ่ายรูป</button>
+        </div>
+        <canvas id="referenceCameraCanvas" class="hidden"></canvas>
+      </section>
       <div class="form-actions">
         <button id="referenceSaveBtn" class="btn primary" type="button">บันทึก</button>
         <button id="referenceResetBtn" class="btn ghost" type="button">ล้าง</button>

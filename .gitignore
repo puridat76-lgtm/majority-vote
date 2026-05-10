@@ -9,3 +9,4 @@ data/prepared/
 data/models/*.h5
 data/models/*_history.json
 .vercel/
+.vercel

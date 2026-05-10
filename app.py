@@ -22,7 +22,8 @@ from werkzeug.utils import secure_filename
 
 BASE_DIR = Path(__file__).resolve().parent
 IS_SERVERLESS = os.environ.get("VERCEL") == "1"
-RUNTIME_DIR = Path(os.environ.get("CAT_APP_RUNTIME_DIR", "/tmp/cat-majority-vote")) if IS_SERVERLESS else BASE_DIR
+SERVERLESS_RUNTIME_KEY = os.environ.get("VERCEL_GIT_COMMIT_SHA") or os.environ.get("VERCEL_DEPLOYMENT_ID") or "local"
+RUNTIME_DIR = Path(os.environ.get("CAT_APP_RUNTIME_DIR", f"/tmp/cat-majority-vote-{SERVERLESS_RUNTIME_KEY}")) if IS_SERVERLESS else BASE_DIR
 UPLOADS_DIR = BASE_DIR / "uploads"
 CATS_DIR = UPLOADS_DIR / "cats"
 REFERENCE_DIR = UPLOADS_DIR / "reference"
@@ -639,12 +640,12 @@ class PredictorService:
         }
 
     def _load_store(self) -> dict[str, Any]:
-        if STORE_PATH.exists():
-            data = json.loads(STORE_PATH.read_text(encoding="utf-8"))
-        elif IS_SERVERLESS and PACKAGE_STORE_PATH.exists():
+        if IS_SERVERLESS and PACKAGE_STORE_PATH.exists():
             data = json.loads(PACKAGE_STORE_PATH.read_text(encoding="utf-8"))
             DATA_DIR.mkdir(parents=True, exist_ok=True)
             self._save_store(data)
+        elif STORE_PATH.exists():
+            data = json.loads(STORE_PATH.read_text(encoding="utf-8"))
         else:
             data = self._default_store()
             self._save_store(data)

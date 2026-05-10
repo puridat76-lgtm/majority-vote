@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+data/index_cache.npz
+data/matplotlib/
+data/imports/
+data/experiments/
+data/prepared/
+data/models/*.h5
+data/models/*_history.json
+.vercel/

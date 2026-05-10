@@ -1,0 +1,291 @@
+{
+  "source_dataset": "/Users/p1650900770/Downloads/cat_majority_vote_ready/data/prepared/cat_retrain_dataset",
+  "clean_dataset": "/Users/p1650900770/Downloads/cat_majority_vote_ready/data/prepared/cat_retrain_dataset_cleaned",
+  "clean_splits": [
+    "train",
+    "val"
+  ],
+  "rules": {
+    "weak_known_threshold": 0.25,
+    "remove_duplicate_known": true,
+    "remove_quality_issues": true,
+    "remove_suspicious_not_cat": true,
+    "remove_weak_known": true,
+    "remove_weak_unknown": true
+  },
+  "removed_total": 35,
+  "kept_total": 1055,
+  "source_counts": {
+    "train": {
+      "known": 693,
+      "unknown_cat": 35,
+      "not_cat": 35
+    },
+    "val": {
+      "known": 198,
+      "unknown_cat": 10,
+      "not_cat": 10
+    },
+    "test": {
+      "known": 99,
+      "unknown_cat": 5,
+      "not_cat": 5
+    }
+  },
+  "clean_counts": {
+    "train": {
+      "known": 677,
+      "unknown_cat": 34,
+      "not_cat": 29
+    },
+    "val": {
+      "known": 191,
+      "unknown_cat": 9,
+      "not_cat": 6
+    },
+    "test": {
+      "known": 99,
+      "unknown_cat": 5,
+      "not_cat": 5
+    }
+  },
+  "removed_counts": {
+    "train": {
+      "not_cat": 6,
+      "unknown_cat": 1,
+      "known": 16
+    },
+    "val": {
+      "not_cat": 4,
+      "unknown_cat": 1,
+      "known": 7
+    }
+  },
+  "removed_files": {
+    "train/not_cat/IMG_8272.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 0.000321
+      }
+    ],
+    "train/not_cat/IMG_8259.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 2e-06
+      }
+    ],
+    "train/not_cat/IMG_8258.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 0.001134
+      }
+    ],
+    "train/not_cat/IMG_8278.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 0.000613
+      }
+    ],
+    "train/not_cat/IMG_8279.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 0.002095
+      }
+    ],
+    "train/not_cat/IMG_8281.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 0.001667
+      }
+    ],
+    "train/unknown_cat/34.jpeg": [
+      {
+        "reason": "weak_unknown_face",
+        "cat_face_score": 0.000609
+      }
+    ],
+    "train/known/เดรโก/Screenshot 2026-03-11 135411.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.234155
+      }
+    ],
+    "train/known/พิกซี่/Screenshot 2026-03-11 214042.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.233386
+      }
+    ],
+    "train/known/เทสซ่า/Screenshot 2026-03-11 131839.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.024288
+      }
+    ],
+    "train/known/ลุค/Screenshot 2026-03-08 162248.png": [
+      {
+        "reason": "quality_issue",
+        "quality_reasons": [
+          "image_too_small"
+        ],
+        "cat_face_score": 0.252614
+      }
+    ],
+    "train/known/แซนดี้/Screenshot 2026-03-11 150715.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.084493
+      }
+    ],
+    "train/known/แซนดี้/Screenshot 2026-03-11 145510.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.083114
+      }
+    ],
+    "train/known/ไคลด์/Screenshot 2026-03-11 164141.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.018833
+      }
+    ],
+    "train/known/ดิกซี่/Screenshot 2026-03-11 202852.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.101655
+      }
+    ],
+    "train/known/ดิกซี่/Screenshot 2026-03-11 202701.png": [
+      {
+        "reason": "exact_duplicate"
+      }
+    ],
+    "train/known/บอนนี่/Screenshot 2026-03-11 161019.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.011782
+      }
+    ],
+    "train/known/บอนนี่/Screenshot 2026-03-11 161047.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.217615
+      }
+    ],
+    "train/known/บอนนี่/Screenshot 2026-03-11 161315.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.03157
+      }
+    ],
+    "train/known/โซอี้/Screenshot 2026-03-11 023818.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.140872
+      }
+    ],
+    "train/known/โซอี้/Screenshot 2026-03-11 023849.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.003599
+      }
+    ],
+    "train/known/แฮร์รี่/Screenshot 2026-03-09 191715.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.172575
+      }
+    ],
+    "train/known/จูลี่/Screenshot 2026-03-11 181423.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.174404
+      }
+    ],
+    "val/not_cat/IMG_8249.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 0.000879
+      }
+    ],
+    "val/not_cat/IMG_8247.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 0.000775
+      }
+    ],
+    "val/not_cat/IMG_8253.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 2e-06
+      }
+    ],
+    "val/not_cat/IMG_8245.JPG": [
+      {
+        "reason": "suspicious_not_cat",
+        "localized_face_detected": true,
+        "cat_face_score": 2.5e-05
+      }
+    ],
+    "val/unknown_cat/13.jpeg": [
+      {
+        "reason": "weak_unknown_face",
+        "cat_face_score": 0.002039
+      }
+    ],
+    "val/known/เทสซ่า/Screenshot 2026-03-11 132038.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.164879
+      }
+    ],
+    "val/known/ลุค/Screenshot 2026-03-08 165743.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.12814
+      }
+    ],
+    "val/known/โซอี้/Screenshot 2026-03-11 024032.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.1203
+      }
+    ],
+    "val/known/โซอี้/Screenshot 2026-03-11 023906.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.025145
+      }
+    ],
+    "val/known/โซอี้/Screenshot 2026-03-11 024017.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.072892
+      }
+    ],
+    "val/known/จูลี่/Screenshot 2026-03-11 200854.png": [
+      {
+        "reason": "weak_known_face",
+        "cat_face_score": 0.018581
+      }
+    ],
+    "val/known/จูลี่/Screenshot 2026-03-11 200741.png": [
+      {
+        "reason": "quality_issue",
+        "quality_reasons": [
+          "image_too_small"
+        ],
+        "cat_face_score": 0.99815
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+.git
+.venv
+__pycache__
+*.pyc
+
+data/imports
+data/experiments
+data/prepared
+data/matplotlib
+data/index_cache.npz
+data/models/*.h5
+data/models/*_history.json
+data/*_report.json
+data/retrain_dataset_*.json
+data/hard_negatives.json
+
+tools

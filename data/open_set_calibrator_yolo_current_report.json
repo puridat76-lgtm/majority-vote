@@ -1,0 +1,65 @@
+{
+  "val_tuned": {
+    "min_probability": 0.45,
+    "min_margin": 0.1,
+    "accuracy": 0.6927,
+    "macro_accuracy": 0.8239,
+    "group_metrics": {
+      "known": 0.6717,
+      "not_cat": 1.0,
+      "unknown_cat": 0.8
+    }
+  },
+  "test_metrics": {
+    "accuracy": 0.6881,
+    "macro_accuracy": 0.8855,
+    "group_metrics": {
+      "known": 0.6566,
+      "not_cat": 1.0,
+      "unknown_cat": 1.0
+    }
+  },
+  "output": "data/models/open_set_calibrator_yolo_current.json",
+  "classes": [
+    "known",
+    "not_cat",
+    "unknown_cat"
+  ],
+  "feature_names": [
+    "best_known_score",
+    "best_not_cat_score",
+    "best_special_score",
+    "best_unknown_score",
+    "blur_score",
+    "brightness",
+    "cat_face_non_face_score",
+    "cat_face_score",
+    "effective_vote_count",
+    "face_detected",
+    "human_face_detected",
+    "known_vs_not_cat_margin",
+    "known_vs_unknown_margin",
+    "localized_face_detected",
+    "min_side",
+    "quality_pass",
+    "query_cat_like",
+    "runner_votes",
+    "runner_weighted_sum",
+    "second_known_score",
+    "top1_is_known",
+    "top1_is_not_cat",
+    "top1_is_unknown",
+    "top1_score",
+    "top_candidate_count",
+    "unknown_vs_not_cat_margin",
+    "vote_margin",
+    "weighted_margin",
+    "winner_avg_score",
+    "winner_best_score",
+    "winner_is_known",
+    "winner_is_not_cat",
+    "winner_is_unknown",
+    "winner_votes",
+    "winner_weighted_sum"
+  ]
+}

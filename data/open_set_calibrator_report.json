@@ -1,0 +1,65 @@
+{
+  "val_tuned": {
+    "min_probability": 0.65,
+    "min_margin": 0.0,
+    "accuracy": 0.6422,
+    "macro_accuracy": 0.8054,
+    "group_metrics": {
+      "known": 0.6162,
+      "not_cat": 1.0,
+      "unknown_cat": 0.8
+    }
+  },
+  "test_metrics": {
+    "accuracy": 0.633,
+    "macro_accuracy": 0.8653,
+    "group_metrics": {
+      "known": 0.596,
+      "not_cat": 1.0,
+      "unknown_cat": 1.0
+    }
+  },
+  "output": "/Users/p1650900770/Downloads/cat_majority_vote_ready/data/models/open_set_calibrator.json",
+  "classes": [
+    "known",
+    "not_cat",
+    "unknown_cat"
+  ],
+  "feature_names": [
+    "best_known_score",
+    "best_not_cat_score",
+    "best_special_score",
+    "best_unknown_score",
+    "blur_score",
+    "brightness",
+    "cat_face_non_face_score",
+    "cat_face_score",
+    "effective_vote_count",
+    "face_detected",
+    "human_face_detected",
+    "known_vs_not_cat_margin",
+    "known_vs_unknown_margin",
+    "localized_face_detected",
+    "min_side",
+    "quality_pass",
+    "query_cat_like",
+    "runner_votes",
+    "runner_weighted_sum",
+    "second_known_score",
+    "top1_is_known",
+    "top1_is_not_cat",
+    "top1_is_unknown",
+    "top1_score",
+    "top_candidate_count",
+    "unknown_vs_not_cat_margin",
+    "vote_margin",
+    "weighted_margin",
+    "winner_avg_score",
+    "winner_best_score",
+    "winner_is_known",
+    "winner_is_not_cat",
+    "winner_is_unknown",
+    "winner_votes",
+    "winner_weighted_sum"
+  ]
+}

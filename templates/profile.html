@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-head" style="text-align: center; margin-bottom: 32px;">
+    <h1>โปรไฟล์แมว</h1>
+    <p class="page-copy">ข้อมูลรายละเอียดของแมวในระบบ</p>
+</section>
+
+<div class="top10-layout" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
+    <article class="panel">
+        <div class="panel-head">
+            <h2>{{ cat.name }}</h2>
+            <div class="status-chip primary">ID: {{ cat.id }}</div>
+        </div>
+
+        <div class="profile-detail-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-top: 20px;">
+            <div class="metric-card">
+                <small>ชื่อเจ้าของ</small>
+                <strong>{{ cat.owner or '-' }}</strong>
+            </div>
+            <div class="metric-card">
+                <small>ข้อมูลติดต่อ</small>
+                <strong>{{ cat.contact or '-' }}</strong>
+            </div>
+            <div class="metric-card" style="grid-column: 1 / -1;">
+                <small>สถานที่พบ/ที่อยู่</small>
+                <strong>{{ cat.location or '-' }}</strong>
+            </div>
+        </div>
+
+        <div style="margin-top: 32px;">
+            <h3>รูปภาพอ้างอิง</h3>
+            <div class="thumb-grid large" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin-top: 16px;">
+                {% for image in cat.images %}
+                <div class="list-item" style="padding: 8px; cursor: default;">
+                    <img src="{{ url_for('uploaded_file', file_path=image.file_path) }}" 
+                         alt="{{ cat.name }}" 
+                         style="width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-sm);">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div style="margin-top: 32px; text-align: center;">
+            <a href="{{ url_for('predict_page') }}" class="btn outline">กลับหน้าหลัก</a>
+        </div>
+    </article>
+</div>
+{% endblock %}

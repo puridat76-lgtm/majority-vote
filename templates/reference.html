@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="page-head">
+    <p class="page-kicker">Reference</p>
+    <h1>{{ page_heading }}</h1>
+    <p class="page-copy">{{ page_copy }}</p>
+  </section>
+
+  <section id="referencePage" class="panel reference-page" data-reference-key="{{ reference_key }}" data-max-upload-bytes="{{ max_upload_bytes }}">
+    <div class="panel-head">
+      <div>
+        <p class="section-kicker">Class</p>
+        <h2 id="referenceTitle">{{ page_heading }}</h2>
+      </div>
+    </div>
+
+    <p id="referenceMessage" class="message hidden"></p>
+
+    <section class="sub-panel">
+      <div class="sub-head">
+        <span>เพิ่มรูปใหม่</span>
+        <strong id="referencePendingCount" class="sub-head-count">0 ไฟล์</strong>
+      </div>
+      <label id="referenceUploadBox" class="upload-box" for="referenceInput">
+        <input id="referenceInput" type="file" accept="image/*" multiple />
+        <strong>เพิ่มรูป</strong>
+        <span id="referenceInputHint">0 ไฟล์</span>
+        <div id="referenceUploadPreviewGrid" class="upload-preview-grid" aria-live="polite"></div>
+      </label>
+      <div class="form-actions">
+        <button id="referenceSaveBtn" class="btn primary" type="button">บันทึก</button>
+        <button id="referenceResetBtn" class="btn ghost" type="button">ล้าง</button>
+      </div>
+    </section>
+
+    <section class="sub-panel">
+      <div class="sub-head">
+        <span>รูปในคลาส</span>
+        <div class="sub-head-actions">
+          <strong id="referenceVisibleCount" class="sub-head-count">0 รูป</strong>
+          <button id="referenceLoadMoreBtn" class="count-pill hidden" type="button"></button>
+        </div>
+      </div>
+      <div id="referenceGrid" class="thumb-grid large"></div>
+      <div id="referenceEmpty" class="empty-card hidden">ยังไม่มีรูป</div>
+    </section>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/reference.js') }}?v={{ asset_version }}"></script>
+{% endblock %}

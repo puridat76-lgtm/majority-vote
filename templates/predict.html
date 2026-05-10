@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="page-head">
+    <p class="page-kicker">Predict</p>
+    <h1>Predict</h1>
+    <p class="page-copy">อัปโหลดรูปหรือใช้กล้อง แล้วดูผลการตัดสินแบบ majority vote top 10</p>
+  </section>
+
+  <section class="page-grid predict-grid">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="section-kicker">Input</p>
+          <h2>รูปเข้า</h2>
+        </div>
+
+        <div class="tab-row" role="tablist">
+          <button class="tab-pill active" data-tab="upload" type="button">อัปโหลด</button>
+          <button class="tab-pill" data-tab="camera" type="button">กล้อง</button>
+        </div>
+      </div>
+
+      <div class="tab-panel active" id="tab-upload">
+        <label class="upload-box large" for="fileInput">
+          <input id="fileInput" type="file" accept="image/*" />
+          <strong>เลือกรูป</strong>
+          <span>JPG PNG WEBP</span>
+        </label>
+      </div>
+
+      <div class="tab-panel" id="tab-camera">
+        <video id="video" autoplay playsinline muted></video>
+        <div class="toolbar">
+          <button id="startCameraBtn" class="btn soft" type="button">เปิดกล้อง</button>
+          <button id="captureBtn" class="btn ghost" type="button">จับภาพ</button>
+        </div>
+        <canvas id="cameraCanvas" class="hidden"></canvas>
+      </div>
+
+      <div class="preview-box">
+        <img id="preview" alt="Preview" />
+        <span id="fileName">ยังไม่มีรูป</span>
+      </div>
+
+      <button id="predictBtn" class="btn primary wide" type="button" disabled>ทำนาย</button>
+    </section>
+
+    <section class="panel predict-result-panel">
+      <div class="panel-head compact">
+        <div>
+          <p class="section-kicker">Result</p>
+          <h2 id="finalLabel">ยังไม่มีผลลัพธ์</h2>
+        </div>
+        <strong id="scorePill" class="score-chip">score -</strong>
+      </div>
+
+      <div id="resultState" class="empty-card">พร้อม</div>
+
+      <article id="resultCard" class="predict-result-card hidden">
+        <section id="modelInputPanel" class="sub-panel hidden">
+          <div class="sub-head">
+            <span>Closest image</span>
+            <strong id="modelInputMeta" class="sub-head-count">-</strong>
+          </div>
+          <article class="predict-input-preview-card">
+            <span class="predict-input-title">รูปที่เหมือนที่สุดในฐานข้อมูล</span>
+            <div id="modelInputFrame" class="predict-input-frame">
+              <img id="modelInputPreview" alt="Closest matching image" />
+            </div>
+            <p id="modelInputNote" class="inline-note predict-input-note">-</p>
+          </article>
+        </section>
+
+        <div id="profileDetails" class="predict-profile hidden">
+          <div class="profile-detail-grid">
+            <article class="profile-detail-card"><span>Similarity Score</span><strong id="resultSimilarity">-</strong></article>
+            <article class="profile-detail-card"><span>ชื่อแมว</span><strong id="resultCatName">-</strong></article>
+            <article class="profile-detail-card"><span>เจ้าของ</span><strong id="resultOwner">-</strong></article>
+            <article class="profile-detail-card"><span>ติดต่อ</span><strong id="resultContact">-</strong></article>
+          </div>
+          <article class="profile-detail-card full address"><span>ที่อยู่</span><strong id="resultLocation">-</strong></article>
+        </div>
+
+        <div id="statusDetails" class="predict-status hidden">
+          <article class="predict-status-card">
+            <span>ผลการทำนาย</span>
+            <strong id="statusTitle">-</strong>
+            <p id="statusCopy" class="page-copy">-</p>
+          </article>
+          <div class="predict-status-grid">
+            <article class="profile-detail-card"><span>Known score สูงสุด</span><strong id="bestKnown">-</strong></article>
+            <article class="profile-detail-card"><span>Known รองลงมา</span><strong id="secondScore">-</strong></article>
+            <article class="profile-detail-card"><span>Unknown score สูงสุด</span><strong id="bestUnknown">-</strong></article>
+            <article class="profile-detail-card"><span>Not cat score สูงสุด</span><strong id="bestNotCat">-</strong></article>
+          </div>
+          <p id="qualityNotes" class="inline-note">-</p>
+        </div>
+
+        <section id="majorityVotePanel" class="sub-panel hidden">
+          <div class="sub-head"><span>Majority vote top 10</span><strong id="decisionSummaryText" class="sub-head-count">-</strong></div>
+          <div class="majority-grid">
+            <article class="profile-detail-card"><span>Winner</span><strong id="winnerLabel">-</strong></article>
+            <article class="profile-detail-card"><span>Votes used</span><strong id="winnerVotes">-</strong></article>
+            <article class="profile-detail-card"><span>Top 10 votes</span><strong id="winnerTop10Votes">-</strong></article>
+            <article class="profile-detail-card"><span>Weighted sum</span><strong id="winnerWeightedSum">-</strong></article>
+            <article class="profile-detail-card"><span>Runner-up</span><strong id="runnerUpLabel">-</strong></article>
+          </div>
+          <p id="decisionReason" class="inline-note">-</p>
+          <div class="top10-layout">
+            <div>
+              <p class="section-kicker compact-kicker">Top 10 candidates</p>
+              <ul id="topCandidates" class="top10-list"></ul>
+            </div>
+            <div>
+              <p class="section-kicker compact-kicker">Class summary</p>
+              <ul id="classSummaryList" class="class-summary-list"></ul>
+            </div>
+          </div>
+        </section>
+
+        <p id="resultFootnote" class="predict-result-note hidden"></p>
+
+        <div id="resultActions" class="predict-actions single">
+          <a id="viewProfileBtn" class="btn ghost hidden" href="{{ url_for('cats') }}">ดูโปรไฟล์แมว</a>
+          <button id="retryPredictBtn" class="btn primary" type="button">ค้นหาอีกครั้ง</button>
+        </div>
+      </article>
+    </section>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/predict.js') }}?v={{ asset_version }}"></script>
+{% endblock %}

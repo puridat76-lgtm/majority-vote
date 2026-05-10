@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <section class="page-head" style="text-align: center; margin-bottom: 32px;">
+    <h1>Admin Login</h1>
+    <p class="page-copy">เข้าสู่ระบบเพื่อจัดการข้อมูลแมวและภาพอ้างอิง</p>
+  </section>
+
+  <section style="max-width: 400px; margin: 0 auto;">
+    <article class="panel">
+      <form id="loginForm" class="editor-form">
+        <div id="loginMsg" class="message hidden"></div>
+        <label class="field">
+          <span>รหัสผ่าน (Password)</span>
+          <input type="password" id="passwordInput" placeholder="กรอกรหัสผ่าน" required autofocus />
+        </label>
+        <button type="submit" id="loginBtn" class="btn outline wide">เข้าสู่ระบบ</button>
+      </form>
+    </article>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginMsg = document.getElementById('loginMsg');
+    const { setMessage, readJson } = window.CatIdentity;
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const password = passwordInput.value;
+      if (!password) return;
+
+      loginBtn.disabled = true;
+      setMessage(loginMsg, 'กำลังตรวจสอบ...', 'neutral');
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        
+        const data = await readJson(response);
+        
+        if (response.ok) {
+          setMessage(loginMsg, 'เข้าสู่ระบบสำเร็จ กำลังไปที่หน้าหลัก...', 'success');
+          window.location.href = '/cats';
+        } else {
+          setMessage(loginMsg, data.message || 'รหัสผ่านไม่ถูกต้อง', 'error');
+          passwordInput.value = '';
+          passwordInput.focus();
+        }
+      } catch (err) {
+        setMessage(loginMsg, 'เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+      } finally {
+        loginBtn.disabled = false;
+      }
+    });
+  </script>
+{% endblock %}
